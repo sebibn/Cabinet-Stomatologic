@@ -37,5 +37,21 @@ public class Programare implements Identifiable {
     public String getScopulProgramarii() {
         return scopulProgramarii;
     }
+
+    public void setPacient(Pacient pacient){
+        this.pacient = pacient;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
+    }
+
+    public void setOra(String ora) {
+        this.ora = ora;
+    }
+
+    public void setScopulProgramarii(String scopulProgramarii) {
+        this.scopulProgramarii = scopulProgramarii;
+    }
 }
 

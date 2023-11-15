@@ -1,6 +1,8 @@
 package domeniu;
 
-public class Pacient implements Identifiable {
+import java.io.Serializable;
+
+public class Pacient implements Identifiable, Serializable {
     private int id;
     private String nume;
     private String prenume;
@@ -28,6 +30,18 @@ public class Pacient implements Identifiable {
 
     public int getVarsta() {
         return varsta;
+    }
+
+    public void setNume(String nume) {
+        this.nume = nume;
+    }
+
+    public void setPrenume(String prenume) {
+        this.prenume = prenume;
+    }
+
+    public void setVarsta(int varsta) {
+        this.varsta = varsta;
     }
 }
 

@@ -2,22 +2,20 @@ package interfata;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import domeniu.Pacient;
 import domeniu.Programare;
-import repository.GenericRepository;
 import servicii.PacientService;
-import servicii.PacientServiceImpl;
 import servicii.ProgramareService;
-import servicii.ProgramareServiceImpl;
+import exceptii.IDNeduplicatException;
+import exceptii.NuExistaException;
+import exceptii.DateSuprapuseException;
 
 public class CabinetStomatologicUI {
-    private PacientService pacientService;
-    private ProgramareService programareService;
-    private Scanner scanner;
+    private final PacientService pacientService;
+    private final ProgramareService programareService;
+    private final Scanner scanner;
 
     public CabinetStomatologicUI(PacientService pacientService, ProgramareService programareService) {
         this.pacientService = pacientService;
@@ -25,7 +23,7 @@ public class CabinetStomatologicUI {
         this.scanner = new Scanner(System.in);
     }
 
-    public void start() {
+    public void start() throws IDNeduplicatException {
         while (true) {
             System.out.println("\n");
             System.out.println("Meniu:");
@@ -33,7 +31,11 @@ public class CabinetStomatologicUI {
             System.out.println("2. Adauga programare");
             System.out.println("3. Afisare pacienti");
             System.out.println("4. Afisare programari");
-            System.out.println("5. Iesire");
+            System.out.println("5. Actualizeaza pacient");
+            System.out.println("6. Actualizeaza programare");
+            System.out.println("7. Sterge pacient");
+            System.out.println("8. Sterge programare");
+            System.out.println("0. Iesire");
             System.out.print("Alegeti o optiune: ");
 
             int optiune = scanner.nextInt();
@@ -44,7 +46,11 @@ public class CabinetStomatologicUI {
                     adaugaPacient();
                     break;
                 case 2:
-                    adaugaProgramare();
+                    try {
+                        adaugaProgramare();
+                    } catch (IDNeduplicatException | NuExistaException | DateSuprapuseException e) {
+                        System.out.println("Eroare: " + e.getMessage());
+                    }
                     break;
                 case 3:
                     afiseazaPacienti();
@@ -53,6 +59,34 @@ public class CabinetStomatologicUI {
                     afiseazaProgramari();
                     break;
                 case 5:
+                    try {
+                        actualizeazaPacient();
+                    } catch (NuExistaException e) {
+                        System.out.println("Eroare: " + e.getMessage());
+                    }
+                    break;
+                case 6:
+                    try {
+                        actualizeazaProgramare();
+                    } catch (NuExistaException | DateSuprapuseException e) {
+                        System.out.println("Eroare: " + e.getMessage());
+                    }
+                    break;
+                case 7:
+                    try {
+                        stergePacient();
+                    } catch (NuExistaException e) {
+                        System.out.println("Eroare: " + e.getMessage());
+                    }
+                    break;
+                case 8:
+                    try {
+                        stergeProgramare();
+                    } catch (NuExistaException e) {
+                        System.out.println("Eroare: " + e.getMessage());
+                    }
+                    break;
+                case 0:
                     System.out.println("Programul se va inchide.");
                     return;
                 default:
@@ -61,14 +95,39 @@ public class CabinetStomatologicUI {
         }
     }
 
-    private void adaugaPacient() {
+    private boolean verificaUnicitateIDProgramare(int id) {
+        List<Programare> programari = programareService.listaProgramari();
+
+        for (Programare programare : programari) {
+            if (programare.getId() == id) {
+                return false; // ID-ul nu este unic
+            }
+        }
+        return true; // ID-ul este unic
+    }
+
+    private boolean verificaExistaPacient(int id) {
+        List<Pacient> pacienti = pacientService.listaPacienti();
+
+        for (Pacient pacient : pacienti) {
+            if(pacient.getId() == id)
+                return false; // Am gasit pacient
+        }
+        return true; // Nu exista pacient
+    }
+
+    private void adaugaPacient() throws IDNeduplicatException {
         System.out.println("\n");
+
         System.out.print("Introduceti ID-ul pacientului: ");
         int id = scanner.nextInt();
+
         System.out.print("Introduceti numele pacientului: ");
         String nume = scanner.next();
+
         System.out.print("Introduceti prenumele pacientului: ");
         String prenume = scanner.next();
+
         System.out.print("Introduceti varsta pacientului: ");
         int varsta = scanner.nextInt();
         scanner.nextLine();
@@ -78,22 +137,30 @@ public class CabinetStomatologicUI {
         System.out.println("Pacient adaugat cu succes!");
     }
 
-    private void adaugaProgramare() {
+    private void adaugaProgramare() throws IDNeduplicatException, NuExistaException, DateSuprapuseException {
         System.out.println("\n");
+
+        System.out.print("Introduceti ID-ul programarii: ");
+        int idProgramare = scanner.nextInt();
+        scanner.nextLine();
+
+        if (!verificaUnicitateIDProgramare(idProgramare)) {
+            throw new IDNeduplicatException("ID-ul programării nu este unic.");
+        }
+
         System.out.print("Introduceti ID-ul pacientului pentru programare: ");
         int idPacient = scanner.nextInt();
         scanner.nextLine();
 
         Pacient pacient = pacientService.gasestePacientDupaId(idPacient);
 
-        if (pacient == null) {
-            System.out.println("Pacientul cu ID-ul " + idPacient + " nu exista.");
-            return;
+        if (verificaExistaPacient(idPacient)){
+            throw new NuExistaException("Nu exista pacientul cu ID-ul dat.");
         }
 
         System.out.print("Introduceti data programarii (YYYY-MM-DD): ");
         String dataInput = scanner.nextLine();
-        Date dataProgramare = null;
+        Date dataProgramare;
 
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -109,7 +176,7 @@ public class CabinetStomatologicUI {
         System.out.print("Introduceti scopul programarii: ");
         String scopulProgramarii = scanner.nextLine();
 
-        Programare programare = new Programare(idPacient, pacient, dataProgramare, ora, scopulProgramarii);
+        Programare programare = new Programare(idProgramare, pacient, dataProgramare, ora, scopulProgramarii);
         programareService.adaugaProgramare(programare);
         System.out.println("Programare adaugata cu succes!");
     }
@@ -140,6 +207,124 @@ public class CabinetStomatologicUI {
                 System.out.println("ID: " + programare.getId() + ", Pacient: " + programare.getPacient().getNume() + " " + programare.getPacient().getPrenume() + ", Data: " + dataFormatata + ", Ora: " + programare.getOra() + ", Scop: " + programare.getScopulProgramarii());
             }
         }
+    }
+
+    private void actualizeazaPacient() throws NuExistaException {
+        System.out.print("Introduceti ID-ul pacientului pe care doriti sa-l actualizati: ");
+        int idPacient = scanner.nextInt();
+        scanner.nextLine();
+
+        Pacient pacient = pacientService.gasestePacientDupaId(idPacient);
+
+        if (verificaExistaPacient(idPacient)){
+            throw new NuExistaException("Nu exista pacientul cu ID-ul dat.");
+        }
+
+        System.out.print("Introduceti numele nou al pacientului: ");
+        String numeNou = scanner.nextLine();
+
+        System.out.print("Introduceti prenumele nou al pacientului: ");
+        String prenumeNou = scanner.nextLine();
+
+        System.out.print("Introduceti noua varsta a pacientului: ");
+        int varstaNoua = scanner.nextInt();
+
+        scanner.nextLine();
+
+        pacient.setNume(numeNou);
+        pacient.setPrenume(prenumeNou);
+        pacient.setVarsta(varstaNoua);
+
+        pacientService.actualizeazaPacient(pacient);
+        System.out.println("Pacient actualizat cu succes!");
+    }
+
+    private void actualizeazaProgramare() throws NuExistaException, DateSuprapuseException {
+        System.out.print("Introduceti ID-ul programarii pe care doriti sa o actualizati: ");
+        int idProgramare = scanner.nextInt();
+        scanner.nextLine();
+
+        Programare programare = programareService.gasesteProgramareDupaId(idProgramare);
+
+        System.out.print("Introduceti ID-ul nou al pacientului pentru programare: ");
+        int idPacient = scanner.nextInt();
+        scanner.nextLine();
+
+        Pacient pacient = pacientService.gasestePacientDupaId(idPacient);
+
+        if (pacient == null) {
+            System.out.println("Pacientul cu ID-ul " + idPacient + " nu exista.");
+            return;
+        }
+
+        System.out.print("Introduceti noua data a programarii (YYYY-MM-DD): ");
+        String dataInput = scanner.nextLine();
+        Date dataProgramareNou;
+
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            dataProgramareNou = dateFormat.parse(dataInput);
+        } catch (ParseException e) {
+            System.out.println("Format de data incorect. Utilizati formatul 'YYYY-MM-DD'.");
+            return;
+        }
+
+        System.out.print("Introduceti noua ora programarii (HH:mm): ");
+        String oraNou = scanner.nextLine();
+
+        System.out.print("Introduceti noul scop al programarii: ");
+        String scopulProgramariiNou = scanner.nextLine();
+
+        programare.setPacient(pacient);
+        programare.setData(dataProgramareNou);
+        programare.setOra(oraNou);
+        programare.setScopulProgramarii(scopulProgramariiNou);
+
+        programareService.actualizeazaProgramare(programare);
+
+        System.out.println("Programare actualizata cu succes!");
+    }
+
+    private void stergePacient() throws NuExistaException {
+        System.out.print("Introduceti ID-ul pacientului pe care doriti sa-l stergeti: ");
+        int idPacient = scanner.nextInt();
+        scanner.nextLine();
+
+        Pacient pacient = pacientService.gasestePacientDupaId(idPacient);
+
+        if (verificaExistaPacient(idPacient)){
+            throw new NuExistaException("Nu exista pacientul cu ID-ul dat.");
+        }
+
+        List<Programare> programari = programareService.listaProgramari();
+        List<Integer> programariDeSters = new ArrayList<>();
+
+        for (Programare programare : programari) {
+//            System.out.println("Am intrat in for");
+            if (programare.getPacient().getId() == pacient.getId()) {
+//                System.out.println("Am gasit programare de sters");
+                programariDeSters.add(programare.getId());
+            }
+        }
+
+        for (Integer id : programariDeSters) {
+            Programare programare = programareService.gasesteProgramareDupaId(id);
+//            System.out.println(programare + " <- se sterge");
+            programareService.stergeProgramare(programare.getId());
+            programari.remove(programare);
+        }
+
+        pacientService.stergePacient(pacient);
+        System.out.println("Pacient sters cu succes!");
+    }
+
+    private void stergeProgramare() throws NuExistaException {
+        System.out.print("Introduceti ID-ul programarii pe care doriti sa o stergeti: ");
+        int idProgramare = scanner.nextInt();
+        scanner.nextLine();
+
+        programareService.stergeProgramare(idProgramare);
+        System.out.println("Programare stearsa cu succes!");
     }
 }
 

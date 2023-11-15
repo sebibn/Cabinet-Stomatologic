@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import domeniu.Identifiable;
-import domeniu.Pacient;
-import domeniu.Programare;
 
-public class GenericRepository<T> {
-    private List<T> entities = new ArrayList<>();
+public abstract class GenericRepository<T> {
+    private final List<T> entities = new ArrayList<>();
 
     public void adauga(T entity) {
         entities.add(entity);
@@ -16,8 +14,7 @@ public class GenericRepository<T> {
 
     public T gasesteDupaId(int id) {
         for (T entity : entities) {
-            if (entity instanceof Identifiable) {
-                Identifiable identifiableEntity = (Identifiable) entity;
+            if (entity instanceof Identifiable identifiableEntity) {
                 if (identifiableEntity.getId() == id) {
                     return entity;
                 }
@@ -40,4 +37,6 @@ public class GenericRepository<T> {
     public void sterge(T entity) {
         entities.remove(entity);
     }
+
+    public abstract List<T> listaEntitati();
 }
