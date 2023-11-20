@@ -46,6 +46,7 @@ public class Main {
 
         ui.start();
 
+        //x
         // Adaugare pacienti
         //adaugaPacienti(pacientService);
 
