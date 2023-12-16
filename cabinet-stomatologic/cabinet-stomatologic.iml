@@ -33,5 +33,8 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="slf4j-api-1.7.36" level="project" />
+    <orderEntry type="library" exported="" name="javafx" level="project" />
+    <orderEntry type="library" exported="" name="sqlite-jdbc-3.43.2.2" level="project" />
   </component>
 </module>

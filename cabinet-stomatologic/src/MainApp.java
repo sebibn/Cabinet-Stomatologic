@@ -1,9 +1,12 @@
-import domeniu.Pacient;
-import domeniu.Programare;
 import exceptii.DateSuprapuseException;
 import exceptii.IDNeduplicatException;
 import exceptii.NuExistaException;
 import interfata.CabinetStomatologicUI;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import repository.*;
 import servicii.PacientService;
 import servicii.PacientServiceImpl;
@@ -12,40 +15,30 @@ import servicii.ProgramareServiceImpl;
 import teste.Tests;
 
 import java.io.IOException;
-import java.io.StreamCorruptedException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-public class Main {
-    public static void main(String[] args) throws ParseException, IDNeduplicatException, IOException, NuExistaException, DateSuprapuseException {
+public class MainApp extends Application {
+
+    private PacientService pacientService;
+    private ProgramareService programareService;
+
+    @Override
+    public void start(Stage primaryStage) throws NuExistaException, IDNeduplicatException, IOException, ParseException, DateSuprapuseException {
         String repositoryType = Settings.getRepositoryType();
         String patientsFileName = Settings.getPatientsFileName();
         String appointmentsFileName = Settings.getAppointmentsFileName();
 
-        PacientService pacientService;
-        ProgramareService programareService;
 
         if ("binary".equals(repositoryType)) {
             BinaryFileRepository<Object> pacientRepository = new BinaryFileRepository<>(patientsFileName);
             BinaryFileRepository<Object> programareRepository = new BinaryFileRepository<>(appointmentsFileName);
-            pacientService = new PacientServiceImpl<>(pacientRepository);
-            programareService = new ProgramareServiceImpl<>(programareRepository);
-            CabinetStomatologicUI ui = new CabinetStomatologicUI(pacientService, programareService);
-
-            Tests.allTests();
-
-            ui.start();
+            this.pacientService = new PacientServiceImpl<>(pacientRepository);
+            this.programareService = new ProgramareServiceImpl<>(programareRepository);
         } else if ("text".equals(repositoryType)) {
             PacientTextFileRepository pacientRepository = new PacientTextFileRepository(patientsFileName);
             ProgramareTextFileRepository programareRepository = new ProgramareTextFileRepository(appointmentsFileName, pacientRepository);
-            pacientService = new PacientServiceImpl<>(pacientRepository);
-            programareService = new ProgramareServiceImpl<>(programareRepository);
-            CabinetStomatologicUI ui = new CabinetStomatologicUI(pacientService, programareService);
-
-            Tests.allTests();
-
-            ui.start();
+            this.pacientService = new PacientServiceImpl<>(pacientRepository);
+            this.programareService = new ProgramareServiceImpl<>(programareRepository);
         } else if ("sql".equals(repositoryType)) {
             PacientSQLRepository pacientRepository = new PacientSQLRepository();
             ProgramareSQLRepository programareRepository = new ProgramareSQLRepository();
@@ -56,17 +49,24 @@ public class Main {
 
             pacientService = new PacientServiceImpl<>(pacientRepository);
             programareService = new ProgramareServiceImpl<>(programareRepository);
-            CabinetStomatologicUI ui = new CabinetStomatologicUI(pacientService, programareService);
-
-            Tests.allTests();
-
-            ui.start();
-
-            pacientRepository.closeConnection();
-            programareRepository.closeConnection();
         }
         else {
             throw new IllegalArgumentException("Invalid repository type: " + repositoryType);
         }
+
+        Tests.allTests();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("CabinetStomatologic.fxml"));
+        Parent root = loader.load();
+        MyController controller = loader.getController();
+        controller.initService(pacientService,programareService);
+
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }

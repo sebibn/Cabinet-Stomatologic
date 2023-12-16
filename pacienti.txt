@@ -3,3 +3,5 @@
 3,Matei,Andrei,28
 4,Marcel,David,23
 5,Bunta,Sebastian,15
+6,Popescu,Marcel,10
+8,Popescu,Vasilescu,33

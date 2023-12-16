@@ -1,5 +1,5 @@
-package repository;
 
+package repository;
 import domeniu.Pacient;
 import domeniu.Programare;
 
@@ -52,7 +52,7 @@ public class ProgramareTextFileRepository extends GenericRepository<Programare> 
 
     private void salveazaDateInFisier() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            for (Programare programare : programari) {
+            for (Programare programare : listaToate()) {
                 Pacient pacient = programare.getPacient();
                 String line = programare.getId() + "," + pacient.getId() + "," + programare.getData() + "," + programare.getOra() + "," + programare.getScopulProgramarii();
                 writer.write(line);
@@ -78,7 +78,6 @@ public class ProgramareTextFileRepository extends GenericRepository<Programare> 
 
     @Override
     public void sterge(Programare programare) {
-//        System.out.println("Se sterge loooooooooooooooool");
         super.sterge(programare);
         programari.remove(programare);
         salveazaDateInFisier();
