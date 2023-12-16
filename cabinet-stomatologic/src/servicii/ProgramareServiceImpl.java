@@ -65,17 +65,6 @@ public class ProgramareServiceImpl<T> implements ProgramareService {
         }
         Programare programare = gasesteProgramareDupaId(idProgramare);
         programareRepository.sterge((T) programare);
-
-//        try{
-//            if (verificaExistaProgramare(idProgramare)){
-//                throw new NuExistaException("Nu exista programarea cu id-ul dat.");
-//            }
-//            Programare programare = gasesteProgramareDupaId(idProgramare);
-//            programareRepository.sterge((T) programare);
-//        }
-//        catch (NuExistaException e) {
-//            System.out.println("Eroare: " + e.getMessage());
-//        }
     }
 
     private boolean verificaExistaProgramare(int id) {

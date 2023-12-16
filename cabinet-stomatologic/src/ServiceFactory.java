@@ -1,6 +1,4 @@
-import repository.BinaryFileRepository;
-import repository.PacientTextFileRepository;
-import repository.ProgramareTextFileRepository;
+import repository.*;
 import servicii.PacientService;
 import servicii.PacientServiceImpl;
 import servicii.ProgramareService;
@@ -12,7 +10,7 @@ public class ServiceFactory {
             return new PacientServiceImpl(pacientRepository);
         } else if ("text".equals(repositoryType)) {
             return new PacientServiceImpl(new PacientTextFileRepository(patientsFileName));
-        } else {
+        }else {
             throw new IllegalArgumentException("Invalid repository type: " + repositoryType);
         }
     }
