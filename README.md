@@ -1,64 +1,36 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/IrCmCT_W)
 # 💻 Cerințe
 Continuați dezvoltarea aplicației de la tema precedentă. 
 
 ## Cerințe non-funcționale
 - Se păstrează cerințele definite în tema **A2**.
 
-## Cerințe pentru următorul laborator
-- Implementați clase noi Repository pentru stocarea entităților din domeniul problemei. Acestea trebuie să fie derivate din implementarea generică de Repository (în memorie) creată pentru tema **A2**.
-- Una din aceste clase va stoca entitățile într-un fișier text (ex. **TextFileRepository**), iar cealaltă (ex. **BinaryFileRepository**) într-un fișier binar, folosind mecanismul de serializare al obiectelor din platforma Java. Fiecare entitate din domeniul problemei va avea propria instanță de Repository.
-- Programul va putea fi pornit folosind oricare din aceste implementări de Repository, iar straturile superioare ale aplicației (ex. *servicii*, *interfața cu utilizatorul*) trebuie să rămână independente de implementarea de repository utilizată.
-- Decizia privind tipul de Repository utilizat, precum și locația pe disc a fișierelor de intrare (în cazul implementării ce utilizează fișiere) se va face prin intermediul unui fișier de setări (ex. *settings.properties*) care va fi citit de program prin intermediul clasei [Properties](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Properties.html). Vedeți exemplul de mai jos:
+## Cerințe funcționale
+- Implementați un Repository nou, care va permite stocarea entităților din domeniu într-o bază de date SQL. Decizia privind ce tip de repository este utilizat se va face prin folosirea fișierului *settings.properties*, implementat în cadrul temei **A3**
+- Implementarea ce utilizează repository SQL va avea 100 entități generate pseudo-aleator și salvate în baza de date. Puteți folosi liste de nume/prenume și funcții pentru a genera date și numere aleatoare pentru a genera această listă.
+- Implementați interfața grafică cu utilizatorul pentru problema selectată inițial în cadrul **A2**. Utilizați tehnologia [JavaFX](https://openjfx.io/). Păstrați codul sursă al interfeței cu utilizatorul în linia de comandă. Aplicația va putea fi pornită atât în linie de comandă, cât și folosind nou implementata interfață grafică prin efectuarea unor modificări minore al codului sursă (ex. comentarea/decomentarea instanțierii unei clase).
+- Implementați cu ajutorul Java 8 streams următoarele rapoarte la nivelul **serviciilor** aplicației, pentru fiecare problemă în parte.
 
-  ``Repository = binary``\
-  ``Patients = “patients.bin”``\
-  ``Appointments = “appointments.bin”``
-  
-- Interfața grafică va permite efectuarea de operații CRUD (creare, citire, actualizare, ștergere - eng. create, read, update, delete) pentru **toate** entitățile din domeniul problemei.
-- Implementați teste unitare folosind [JUnit](https://www.jetbrains.com/help/idea/junit.html). Acoperirea codului cu teste (eng. *test coverage*) trebuie să fie peste 90%, cu excepția claselor din interfața cu utilizatorul.
+  - **Problema 1**
+  - Numărul de programări pentru fiecare pacient în parte. Se vor afișa datele pacientului și numărul total de programări pentru acesta. Afișarea se va face în ordine descrescătoare a numărului de programări.
+  - Numărul total de programări pentru fiecare lună a anului. Se va afișa fiecare lună a anului, și numărul total de programări existente pentru acea lună. Afișarea se va face în ordine descrescătoare a numărului de programări.
+  - Numărul de zile trecute de la ultima programare a fiecărui pacient. Se vor afișa datele pacientului, data ultimei programări și numărul de zile trecute de la ultima programare. Afișarea se va face în ordine descrescătoare a numărului de zile trecute de la ultima programare.
+  - Cele mai aglomerate luni ale anului. Se vor afișa lunile anului, sortate în mod descrescător după numărul de programări. Se va afișa și numărul de programări din fiecare lună.
 
-Termenul limită pentru predarea cu notă maximă este **laboratorul din cadrul săptămânii 7 sau 8** (depinzând de orar).
+  - **Problema 2**
+  - Numărul de torturi comandate în fiecare zi (o comandă poate avea unul sau mai multe torturi). Se vor afișa doar acele date pentru care au fost înregistrate comenzi, precum și numărul de torturi comandate în fiecare zi. Afișarea se va realiza în ordine descrescătoare a numărului de torturi comandate în fiecare zi.
+  - Numărul de torturi comandate în fiecare lună a anului. Se vor afișa lunile anului, precum și numărul de torturi comandate în fiecare lună. Afișarea se va face în ordine descrescătoare a numărului de torturi comandate.
+  - Cele mai des comandate torturi. Se vor afișa toate informațiile despre fiecare tort, împreună cu numărul total de comenzi pentru fiecare. Țineți cont că o comandă poate include mai multe torturi de tipuri diferite. Afișarea se va face în ordine descrescătoare a numărului de comenzi pentru fiecare tort.
 
-## Bonus (0.1p)
-Implementați un tip adițional de Repository care permite salvarea entităților în format JSON. Termenul limită pentru implementarea bonusului este același cu cel pentru predarea cu notă maximă.
-## Bonus (0.1p)
-Implementați un tip adițional de Repository care permite salvarea entităților în format XML. Termenul limită pentru implementarea bonusului este același cu cel pentru predarea cu notă maximă.
-=======
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/lclUyi7e)
-=======
->>>>>>> 4dcae7d (Lab2)
-# 💻 Cerințe
-Continuați dezvoltarea aplicației de la tema precedentă. 
+  - **Problema 3**
+  - Cele mai des închiriate mașini. Se vor afișa datele pentru fiecare mașină precum și numărul de închirieri, în ordine descrescătoare a numărului de închirieri.
+  - Numărul de închirieri efectuate în fiecare lună a anului. Se vor afișa lunile anului, precum și numărul de închirieri efectuate în fiecare lună, în ordine descrescătoare a numărului de închirieri. O închiriere pentru care data de început și data de sfârșit se găsește în luni diferite se va adăuga statisticii lunii asociate datei de început.
+  - Mașinile care au fost închiriate cel mai mult timp. Se vor afișa datele pentru fiecare mașină precum și numărul total de zile de închiriere pentru fiecare. 
 
-## Cerințe non-funcționale
-- Se păstrează cerințele definite în tema **A2**.
+Termenul limită pentru predarea temei este **laboratorul din cadrul săptămânii 11 sau 12**, depinzând de orar.
 
-## Cerințe pentru următorul laborator
-- Implementați clase noi Repository pentru stocarea entităților din domeniul problemei. Acestea trebuie să fie derivate din implementarea generică de Repository (în memorie) creată pentru tema **A2**.
-- Una din aceste clase va stoca entitățile într-un fișier text (ex. **TextFileRepository**), iar cealaltă (ex. **BinaryFileRepository**) într-un fișier binar, folosind mecanismul de serializare al obiectelor din platforma Java. Fiecare entitate din domeniul problemei va avea propria instanță de Repository.
-- Programul va putea fi pornit folosind oricare din aceste implementări de Repository, iar straturile superioare ale aplicației (ex. *servicii*, *interfața cu utilizatorul*) trebuie să rămână independente de implementarea de repository utilizată.
-- Decizia privind tipul de Repository utilizat, precum și locația pe disc a fișierelor de intrare (în cazul implementării ce utilizează fișiere) se va face prin intermediul unui fișier de setări (ex. *settings.properties*) care va fi citit de program prin intermediul clasei [Properties](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Properties.html). Vedeți exemplul de mai jos:
+### Bonus (0.1p)
+Implementați un tip adițional de Repository care permite salvarea entităților într-o bază de date NoSQL. Acesta va fi integrat în mecanismul fișierului de setări al aplicației (*setttings.properties*).
 
-<<<<<<< HEAD
-## Enunțurile problemelor
-1. Implementați o aplicație Java pentru administrarea programărilor la un cabinet stomatologic. Entitățile din domeniul problemei sunt `Pacient` (**ID**, `nume`, `prenume`, `vârstă`) și `Programare` (**ID**, `pacient` : Pacient, `data`, `ora`, `scopul programării`). Fiecare programare are asociată exact un pacient, dar un pacient poate avea mai multe programări. Fiecare programare durează 60 minute.
-2. Implementați o aplicație Java pentru administrarea comenzilor de torturi de la o cofetărie. Entitățile din domeniul problemei sunt `Comandă` (**ID**, `tort` : Listă, `data`) și `Tort` (**ID**, `tipul tortului`). Fiecare comandă are asociată cel puțin un tort. 
-3. Implementați o aplicație Java pentru administrarea închirierilor de mașini. Entitățile din domeniul problemei sunt `Mașină` (**ID**, `marcă`, `model`) și `Închiriere` (**ID**, `mașina` : Mașină, `data început`, `data sfârșit`). Fiecare închiriere are asociată exact o mașină. O mașină poate avea înregistrate mai multe închirieri, dar acestea nu au voie să se suprapună ca timp.
->>>>>>> 9e4f932 (Lab2)
-=======
-  ``Repository = binary``\
-  ``Patients = “patients.bin”``\
-  ``Appointments = “appointments.bin”``
-  
-- Interfața grafică va permite efectuarea de operații CRUD (creare, citire, actualizare, ștergere - eng. create, read, update, delete) pentru **toate** entitățile din domeniul problemei.
-- Implementați teste unitare folosind [JUnit](https://www.jetbrains.com/help/idea/junit.html). Acoperirea codului cu teste (eng. *test coverage*) trebuie să fie peste 90%, cu excepția claselor din interfața cu utilizatorul.
-
-Termenul limită pentru predarea cu notă maximă este **laboratorul din cadrul săptămânii 7 sau 8** (depinzând de orar).
-
-## Bonus (0.1p)
-Implementați un tip adițional de Repository care permite salvarea entităților în format JSON. Termenul limită pentru implementarea bonusului este același cu cel pentru predarea cu notă maximă.
-## Bonus (0.1p)
-Implementați un tip adițional de Repository care permite salvarea entităților în format XML. Termenul limită pentru implementarea bonusului este același cu cel pentru predarea cu notă maximă.
->>>>>>> 4dcae7d (Lab2)
+### Bonus (0.1p)
+Adăugați o setare nouă în fișierul *setttings.properties*, în care se va specifica dacă aplicația pornește în linie de comandă sau prin interfață grafică. Modificarea acestei setări în fișier determină modificarea modului de pornire al aplicației, fără a fi necesare modificări la nivelul codului sursă. 
