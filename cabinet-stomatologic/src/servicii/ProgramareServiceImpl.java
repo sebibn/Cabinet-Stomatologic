@@ -7,8 +7,13 @@ import exceptii.NuExistaException;
 import repository.ProgramareTextFileRepository;
 import repository.Repository;
 
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.time.YearMonth;
+
 
 public class ProgramareServiceImpl<T> implements ProgramareService {
     private final Repository<T> programareRepository;
@@ -87,5 +92,65 @@ public class ProgramareServiceImpl<T> implements ProgramareService {
             }
         }
         return false;
+    }
+
+    public void afiseazaNumarProgramariFiecarePacient() {
+        List<Programare> programari = listaProgramari();
+
+        // Gruparea programarilor după pacient și calcularea numărului de programări pentru fiecare pacient
+        Map<Pacient, Long> numarProgramariPePacient = programari.stream()
+                .collect(Collectors.groupingBy(Programare::getPacient, Collectors.counting()));
+
+        // Afișarea rezultatelor în ordine descrescătoare a numărului de programări
+        numarProgramariPePacient.entrySet().stream()
+                .sorted((entry1, entry2) -> Long.compare(entry2.getValue(), entry1.getValue()))
+                .forEach(entry -> {
+                    Pacient pacient = entry.getKey();
+                    Long numarProgramari = entry.getValue();
+                    System.out.println("Pacient: " + pacient.getNume() + " " + pacient.getPrenume() +
+                            ", Număr programări: " + numarProgramari);
+                });
+    }
+
+        public void afiseazaNumarProgramariFiecareLunaAn() {
+        List<Programare> programari = listaProgramari();
+
+        // Gruparea programarilor după lună și calcularea numărului de programări pentru fiecare lună
+            Map<YearMonth, Long> numarProgramariPeLuna = programari.stream()
+                    .collect(Collectors.groupingBy(
+                            programare -> YearMonth.from(programare.getData().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()),
+                            Collectors.counting()));
+
+
+            // Afișarea rezultatelor în ordine descrescătoare a numărului de programări
+        numarProgramariPeLuna.entrySet().stream()
+                .sorted((entry1, entry2) -> Long.compare(entry2.getValue(), entry1.getValue()))
+                .forEach(entry -> {
+                    YearMonth lunaAn = entry.getKey();
+                    Long numarProgramari = entry.getValue();
+                    System.out.println("Luna: " + lunaAn.getMonth() + " An: " + lunaAn.getYear() +
+                            ", Număr programări: " + numarProgramari);
+                });
+    }
+
+    public void afiseazaCeleMaiAglomerateLuni() {
+        List<Programare> programari = listaProgramari();
+
+        // Gruparea programarilor după lună și calcularea numărului total de programări pentru fiecare lună
+        Map<YearMonth, Long> numarTotalProgramariPeLuna = programari.stream()
+                .collect(Collectors.groupingBy(
+                        programare -> YearMonth.from(programare.getData().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()),
+                        Collectors.counting()));
+
+
+        // Afișarea rezultatelor în ordine descrescătoare a numărului de programări
+        numarTotalProgramariPeLuna.entrySet().stream()
+                .sorted((entry1, entry2) -> Long.compare(entry2.getValue(), entry1.getValue()))
+                .forEach(entry -> {
+                    YearMonth lunaAn = entry.getKey();
+                    Long numarTotalProgramari = entry.getValue();
+                    System.out.println("Luna: " + lunaAn.getMonth() + " An: " + lunaAn.getYear() +
+                            ", Număr total programări: " + numarTotalProgramari);
+                });
     }
 }

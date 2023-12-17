@@ -27,14 +27,18 @@ public class CabinetStomatologicUI {
         while (true) {
             System.out.println("\n");
             System.out.println("Meniu:");
-            System.out.println("1. Adauga pacient");
-            System.out.println("2. Adauga programare");
-            System.out.println("3. Afisare pacienti");
-            System.out.println("4. Afisare programari");
-            System.out.println("5. Actualizeaza pacient");
-            System.out.println("6. Actualizeaza programare");
-            System.out.println("7. Sterge pacient");
-            System.out.println("8. Sterge programare");
+            System.out.println("1.  Adauga pacient");
+            System.out.println("2.  Adauga programare");
+            System.out.println("3.  Afisare pacienti");
+            System.out.println("4.  Afisare programari");
+            System.out.println("5.  Actualizeaza pacient");
+            System.out.println("6.  Actualizeaza programare");
+            System.out.println("7.  Sterge pacient");
+            System.out.println("8.  Sterge programare");
+            System.out.println("9.  Numar programari pentru fiecare pacient");
+            System.out.println("10. Numar programari pentru fiecare luna din an");
+            System.out.println("11. Cele mai aglomerate luni");
+            System.out.println("12. Zile de la ultima programare pt fiecare pacient");
             System.out.println("0. Iesire");
             System.out.print("Alegeti o optiune: ");
 
@@ -85,6 +89,18 @@ public class CabinetStomatologicUI {
                     } catch (NuExistaException e) {
                         System.out.println("Eroare: " + e.getMessage());
                     }
+                    break;
+                case 9:
+                    NumarProgramariFiecarePacient();
+                    break;
+                case 10:
+                    NumarProgramariFiecareLunaAn();
+                    break;
+                case 11:
+                    CeleMaiAglomerateLuni();
+                    break;
+                case 12:
+                    ZileDeLaUltimaProgramare();
                     break;
                 case 0:
                     System.out.println("Programul se va inchide.");
@@ -325,6 +341,25 @@ public class CabinetStomatologicUI {
 
         programareService.stergeProgramare(idProgramare);
         System.out.println("Programare stearsa cu succes!");
+    }
+
+    private void NumarProgramariFiecarePacient() {
+        programareService.afiseazaNumarProgramariFiecarePacient();
+    }
+
+    private void NumarProgramariFiecareLunaAn() {
+        programareService.afiseazaNumarProgramariFiecareLunaAn();
+    }
+
+    private void CeleMaiAglomerateLuni() {
+        programareService.afiseazaCeleMaiAglomerateLuni();
+    }
+
+    private void ZileDeLaUltimaProgramare() {
+        List<Pacient> pacienti = pacientService.listaPacienti();
+        List<Programare> programari = programareService.listaProgramari();
+
+        pacientService.afiseazaZileDeLaUltimaProgramare(pacienti, programari);
     }
 }
 

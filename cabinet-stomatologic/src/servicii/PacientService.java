@@ -1,6 +1,7 @@
 package servicii;
 
 import domeniu.Pacient;
+import domeniu.Programare;
 import exceptii.IDNeduplicatException;
 
 import java.io.Serializable;
@@ -12,5 +13,6 @@ public interface PacientService extends Serializable {
     List<Pacient> listaPacienti();
     void actualizeazaPacient(Pacient pacient);
     void stergePacient(Pacient pacient);
+    void afiseazaZileDeLaUltimaProgramare(List<Pacient> pacienti, List<Programare> programari);
 }
 

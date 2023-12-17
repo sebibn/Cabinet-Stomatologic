@@ -12,5 +12,8 @@ public interface ProgramareService {
     List<Programare> listaProgramari();
     void actualizeazaProgramare(Programare programare) throws NuExistaException;
     void stergeProgramare(int idProgramare) throws NuExistaException;
+    void afiseazaNumarProgramariFiecarePacient();
+    void afiseazaNumarProgramariFiecareLunaAn();
+    void afiseazaCeleMaiAglomerateLuni();
 }
 
