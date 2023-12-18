@@ -7,10 +7,7 @@ import exceptii.IDNeduplicatException;
 import exceptii.NuExistaException;
 import interfata.CabinetStomatologicUI;
 import org.junit.jupiter.api.Test;
-import repository.BinaryFileRepository;
-import repository.GenericRepository;
-import repository.PacientTextFileRepository;
-import repository.ProgramareTextFileRepository;
+import repository.*;
 import servicii.PacientService;
 import servicii.PacientServiceImpl;
 import servicii.ProgramareService;
@@ -29,11 +26,12 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Tests {
     /// REPOSITORIES TESTS
     @Test
-    private static void BinaryRepoPacient() throws IOException {
+    public static void BinaryRepoPacient() throws IOException {
         deleteFileContent("PacientiTest.dat");
 
         BinaryFileRepository<Object> pacientRepository = new BinaryFileRepository<>("PacientiTest.dat");
@@ -51,7 +49,7 @@ public class Tests {
     }
 
     @Test
-    private static void BinaryRepoProgramare() throws ParseException {
+    public static void BinaryRepoProgramare() throws ParseException {
         deleteFileContent("PacientiTest.dat");
         deleteFileContent("ProgramariTest.dat");
 
@@ -88,7 +86,7 @@ public class Tests {
     }
 
     @Test
-    private static void TextFileRepoPacient() throws IOException {
+    public static void TextFileRepoPacient() throws IOException {
         deleteFileContent("PacientiTest.txt");
 
         PacientTextFileRepository pacientRepository = new PacientTextFileRepository("PacientiTest.txt");
@@ -106,7 +104,7 @@ public class Tests {
     }
 
     @Test
-    private static void TextFileRepoProgramare() throws ParseException {
+    public static void TextFileRepoProgramare() throws ParseException {
         deleteFileContent("PacientiTest.txt");
         deleteFileContent("ProgramariTest.txt");
 
@@ -142,11 +140,55 @@ public class Tests {
 
     }
 
+    @Test
+    public static void SQLRepo() throws ParseException {
+        PacientSQLRepository pacientRepository = new PacientSQLRepository();
+        ProgramareSQLRepository programareRepository = new ProgramareSQLRepository();
+
+        pacientRepository.openConnection();
+        programareRepository.openConnection();
+
+        pacientRepository.createSchema();
+        programareRepository.createSchema();
+
+        Pacient pacient1 = new Pacient(1,"Popescu","Maria",20);
+        Pacient pacient2 = new Pacient(1,"Pop","Alin",31);
+
+        String dataString = "";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        dataString="2020-12-12";
+        Date dataProgramare = dateFormat.parse(dataString);
+        Programare programare1 = new Programare(1,pacient1,dataProgramare,"18:45","scop test 1");
+        Programare programare2 = new Programare(1,pacient2,dataProgramare,"12:30","scop test 2");
+
+        pacientRepository.adauga(pacient1);
+        pacientRepository.actualizeaza(pacient2);
+
+        programareRepository.adauga(programare1);
+        programareRepository.actualizeaza(programare2);
+
+        List<Pacient> pacienti = pacientRepository.listaEntitati();
+        assertEquals(1075384216, pacienti.getFirst().getId());
+
+        List<Programare> programari = programareRepository.listaEntitati();
+        assertEquals(2015857860, programari.getFirst().getId());
+
+        Pacient pacientGasit = pacientRepository.gasesteDupaId(1075384216);
+        Programare programareGasita = programareRepository.gasesteDupaId(2015857860);
+
+        programareRepository.sterge(programare2);
+        pacientRepository.sterge(pacient2);
+
+        pacientRepository.closeConnection();
+        programareRepository.closeConnection();
+    }
+
 
     /// SERVICE TESTS
 
     @Test
-    private static void ServiceTest() throws ParseException, IDNeduplicatException, NuExistaException, DateSuprapuseException {
+    public static void ServiceTest() throws ParseException, IDNeduplicatException, NuExistaException, DateSuprapuseException {
         BinaryFileRepository<Object> pacientRepository = new BinaryFileRepository<>("PacientiTest.dat");
         BinaryFileRepository<Object> programareRepository = new BinaryFileRepository<>("ProgramariTest.dat");
         PacientService pacientService = new PacientServiceImpl<>(pacientRepository);
@@ -213,12 +255,21 @@ public class Tests {
         catch (NuExistaException e){
             //
         }
+
+        List<Pacient> pacienti = pacientService.listaPacienti();
+        List<Programare> programari = programareService.listaProgramari();
+
+        pacientService.afiseazaZileDeLaUltimaProgramare(pacienti, programari);
+
+        programareService.afiseazaCeleMaiAglomerateLuni();
+        programareService.afiseazaNumarProgramariFiecareLunaAn();
+        programareService.afiseazaNumarProgramariFiecarePacient();
     }
 
     /// Masina
 
     @Test
-    private static void PacientTest(){
+    public static void PacientTest(){
         Pacient pacient = new Pacient(1,"Popescu","Maria",20);
 
         assertEquals(pacient.getId(), 1);
@@ -239,7 +290,7 @@ public class Tests {
     /// Inchiriere
 
     @Test
-    private static void ProgramareTest() throws ParseException {
+    public static void ProgramareTest() throws ParseException {
         Pacient pacient = new Pacient(1,"Popescu","Maria",20);
         String dataString = "";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -285,6 +336,7 @@ public class Tests {
         BinaryRepoProgramare();
         TextFileRepoPacient();
         TextFileRepoProgramare();
+        SQLRepo();
 
         ServiceTest();
 

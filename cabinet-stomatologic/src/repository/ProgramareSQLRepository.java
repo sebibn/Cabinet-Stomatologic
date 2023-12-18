@@ -138,7 +138,7 @@ public class ProgramareSQLRepository implements Repository<Programare> {
             conn.setAutoCommit(false);
 
             try (PreparedStatement updateidPacient = conn.prepareStatement("UPDATE programari SET idPacient = ? WHERE id = ?");
-                 PreparedStatement updateData = conn.prepareStatement("UPDATE programari SET data = ? WHERE id = ?");
+                 PreparedStatement updateData = conn.prepareStatement("UPDATE programari SET datap = ? WHERE id = ?");
                  PreparedStatement updateOra = conn.prepareStatement("UPDATE programari SET ora = ? WHERE id = ?");
                  PreparedStatement updateScop = conn.prepareStatement("UPDATE programari SET scop = ? WHERE id = ?");) {
 
